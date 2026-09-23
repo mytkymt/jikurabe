@@ -1,4 +1,4 @@
-# Jikurabe 字比べ — 和文書体 diff ツール
+# Jikurabe — 和文フォント用 diff ツール
 
 2つの日本語フォントを重ねて、字形の違いを見比べるツール。
 [Tiff](https://winniethemu.github.io/tiff/)（by @winnie_the_mu）に着想を得た、日本語フォント向けの実装です。

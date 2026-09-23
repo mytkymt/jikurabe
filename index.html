@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jikurabe — 和文書体 diff ツール</title>
+<meta name="description" content="2つの日本語フォントを重ねて、字形の違いを見比べるツール。Google Fonts の和文書体・PC内のフォント・フォントファイルに対応。">
+<link rel="canonical" href="https://mytkymt.github.io/jikurabe/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jikurabe">
+<meta property="og:title" content="Jikurabe 字比べ — 和文書体 diff ツール">
+<meta property="og:description" content="2つの日本語フォントを重ねて、字形の違いを見比べる無料ツール。Google Fonts の和文68書体・PC内のフォント・フォントファイルに対応。差分％も表示。">
+<meta property="og:url" content="https://mytkymt.github.io/jikurabe/">
+<meta property="og:image" content="https://mytkymt.github.io/jikurabe/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jikurabe 字比べ — 和文書体 diff ツール">
+<meta name="twitter:description" content="2つの日本語フォントを重ねて、字形の違いを見比べる無料ツール。Google Fonts の和文68書体・PC内のフォント・フォントファイルに対応。">
+<meta name="twitter:image" content="https://mytkymt.github.io/jikurabe/og.png">
+<meta name="theme-color" content="#22262e">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Jikurabe",
+  "alternateName": "字比べ",
+  "url": "https://mytkymt.github.io/jikurabe/",
+  "description": "2つの日本語フォントを重ねて、字形の違いを見比べる和文書体の diff ツール。Google Fonts の和文書体、PC にインストール済みのフォント、フォントファイルを比較でき、文字ごとの差分％を表示する。",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any (Web browser)",
+  "browserRequirements": "Requires JavaScript",
+  "inLanguage": "ja",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "image": "https://mytkymt.github.io/jikurabe/og.png",
+  "codeRepository": "https://github.com/mytkymt/jikurabe",
+  "keywords": "日本語フォント, 和文書体, フォント比較, 字形, 明朝, ゴシック, Google Fonts, type diff",
+  "featureList": [
+    "2つのフォントを青と赤で重ねて表示",
+    "Google Fonts の和文 68 書体に対応",
+    "PC にインストール済みのフォントを指定",
+    "フォントファイル（otf / ttf / woff / woff2）をブラウザ内で読み込み",
+    "文字ごとの差分％とグリフ欠落の検出",
+    "重ね / A のみ / B のみ、塗り / 輪郭、罫線の表示",
+    "比較状態を URL で共有"
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Serif+JP:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css?v=10">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <h1>Jikurabe</h1>
+      <p class="lead">書体を重ねて字形の違いを見比べる<br>和文フォント用 type diff ツール</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="local-row" aria-label="PC のフォント">
+    <button type="button" id="local-fonts" class="ghost">PC のフォント一覧を読み込む</button>
+    <span class="local-note" id="local-note">読み込むと、インストール済みフォントが下の検索候補に加わります（Chrome / Edge）</span>
+  </section>
+  <section class="pickers" aria-label="フォントの選択">
+    <div class="picker" data-slot="a">
+      <label class="tag tag-a" for="font-a">Font A</label>
+      <div class="combo">
+        <input id="font-a" class="font-input" type="text" placeholder="フォント名・明朝・丸 などで検索" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggest-a">
+        <ul id="suggest-a" class="suggest" role="listbox" hidden></ul>
+      </div>
+      <select id="weight-a" class="weight" aria-label="Font A のウェイト"></select>
+      <button type="button" class="file-btn" data-slot="a" title="フォントファイルを開く（.otf / .ttf / .woff / .woff2）">ファイル…</button>
+      <p class="status" id="status-a" aria-live="polite"></p>
+    </div>
+    <button type="button" id="swap" class="swap" title="A と B を入れ替え" aria-label="A と B を入れ替え">⇄</button>
+    <div class="picker" data-slot="b">
+      <label class="tag tag-b" for="font-b">Font B</label>
+      <div class="combo">
+        <input id="font-b" class="font-input" type="text" placeholder="フォント名・明朝・丸 などで検索" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggest-b">
+        <ul id="suggest-b" class="suggest" role="listbox" hidden></ul>
+      </div>
+      <select id="weight-b" class="weight" aria-label="Font B のウェイト"></select>
+      <button type="button" class="file-btn" data-slot="b" title="フォントファイルを開く（.otf / .ttf / .woff / .woff2）">ファイル…</button>
+      <p class="status" id="status-b" aria-live="polite"></p>
+    </div>
+    <input id="file-input" type="file" accept=".otf,.ttf,.woff,.woff2,font/*" hidden>
+  </section>
+
+  <section class="toolbar" aria-label="表示オプション">
+    <div class="seg" role="group" aria-label="表示するフォント">
+      <button type="button" data-show="both" class="on">重ねる</button>
+      <button type="button" data-show="a">A のみ</button>
+      <button type="button" data-show="b">B のみ</button>
+    </div>
+    <div class="seg" role="group" aria-label="描画方法">
+      <button type="button" data-style="fill" class="on">塗り</button>
+      <button type="button" data-style="outline">輪郭</button>
+    </div>
+    <label class="check"><input type="checkbox" id="guides" checked> 罫線を表示</label>
+    <button type="button" id="share-x" class="ghost">X で共有</button>
+    <button type="button" id="copy-link" class="ghost">この比較のリンクをコピー</button>
+  </section>
+
+  <section id="cells" class="cells" aria-label="比較結果"></section>
+
+  <section class="text-edit">
+    <label for="chars">比較する文字（最大 24 文字）</label>
+    <input id="chars" type="text" spellcheck="false" autocomplete="off">
+    <div class="presets" aria-label="文字のプリセット">
+      <button type="button" data-preset="永あなア">標準</button>
+      <button type="button" data-preset="あおなのふれをゆ">ひらがな</button>
+      <button type="button" data-preset="アオサネプロヲン">カタカナ</button>
+      <button type="button" data-preset="永東国愛鷹酬風心">漢字</button>
+      <button type="button" data-preset="、。「」ー！？々">約物</button>
+      <button type="button" data-preset="Rghe">欧文</button>
+      <button type="button" data-preset="0123456789">数字</button>
+    </div>
+  </section>
+
+  <section class="about" aria-label="このツールについて">
+    <h2><span class="brand">Jikurabe</span>（字比べ）とは</h2>
+    <p><span class="brand">Jikurabe</span> は、2つの日本語フォントを同じ位置に<strong>青と赤で重ねて表示</strong>し、字形の違いをひと目で見比べるための無料の Web ツールです。ゴシックと明朝、Noto Sans JP と Zen Kaku Gothic New のような似た書体同士、ウェイト違いなど、並べただけでは分かりにくい「はらい」「ふところ」「重心」「字面の大きさ」の差が、重ねることで浮かび上がります。書体選び、フォントの置き換え検討、タイポグラフィの学習に使えます。</p>
+
+    <h2>使い方</h2>
+    <ol>
+      <li><strong>Font A / Font B</strong> にフォント名を入力します。入力欄を押すと候補が開き、「明朝」「丸」「しっぽり」のような部分一致でも絞り込めます。候補は各フォントで「永あ」がプレビューされます。</li>
+      <li>ウェイトを選びます（Google Fonts の書体は、そのフォントが持つウェイトだけが選べます）。</li>
+      <li><strong>比較する文字</strong>を書き換えます。ひらがな・カタカナ・漢字・約物・欧文・数字のプリセットも用意しています。</li>
+      <li>必要に応じて「A のみ / B のみ」「塗り / 輪郭」「罫線を表示」を切り替えます。</li>
+      <li>「X で共有」や「この比較のリンクをコピー」で、同じ比較を URL として共有できます。</li>
+    </ol>
+
+    <h2>使えるフォント</h2>
+    <ul>
+      <li><strong>Google Fonts の和文書体</strong> — 日本語サブセットを持つ 68 ファミリー。</li>
+      <li><strong>PC にインストール済みのフォント</strong> — フォント名を直接入力するか、Chrome / Edge では「PC のフォント一覧を読み込む」で候補に追加できます（ヒラギノ、游ゴシック、游明朝、メイリオ、小塚、モリサワや Fontworks の製品フォントなど、インストール済みなら何でも）。</li>
+      <li><strong>フォントファイル</strong> — .otf / .ttf / .woff / .woff2 を「ファイル…」から開けます。ファイルはブラウザ内だけで処理され、サーバーには送信されません。制作中のフォントや、購入したフォントの検討にも使えます。</li>
+    </ul>
+
+    <h2>差分％の見方</h2>
+    <p>各文字の下に出る<strong>差分％</strong>は、2つの字形のどちらかが塗られている面積のうち、片方だけが塗られている面積の割合です（XOR ÷ OR）。0% なら完全に同じ形、100% なら重なりがまったくない形です。同じ書体のウェイト違いで 10〜20%、ゴシックと明朝の比較で 40〜60% 程度が目安になります。字面の大きさや重心のずれも差分に含まれるので、「字形が似ているのに％が高い」場合は位置やサイズの違いの可能性があります。フォールバック書体で比較してしまうことを防ぐため、フォントがその文字を持たない場合は「グリフなし」と表示しています。</p>
+
+    <details class="fontlist">
+      <summary>対応している Google Fonts の和文書体 68 ファミリー（クリックで Noto Sans JP と比較）</summary>
+      <ul>
+<li><b>ゴシック</b>（29）: <a href="#a=Noto+Sans+JP&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Noto Sans JP</a>、<a href="#a=M+PLUS+Rounded+1c&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">M PLUS Rounded 1c</a>、<a href="#a=M+PLUS+1p&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">M PLUS 1p</a>、<a href="#a=Zen+Kaku+Gothic+New&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Zen Kaku Gothic New</a>、<a href="#a=Zen+Maru+Gothic&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Zen Maru Gothic</a>、<a href="#a=LINE+Seed+JP&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">LINE Seed JP</a>、<a href="#a=BIZ+UDPGothic&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">BIZ UDPGothic</a>、<a href="#a=Sawarabi+Gothic&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Sawarabi Gothic</a>、<a href="#a=Kosugi+Maru&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kosugi Maru</a>、<a href="#a=M+PLUS+1&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">M PLUS 1</a>、<a href="#a=M+PLUS+2&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">M PLUS 2</a>、<a href="#a=Zen+Kaku+Gothic+Antique&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Zen Kaku Gothic Antique</a>、<a href="#a=IBM+Plex+Sans+JP&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">IBM Plex Sans JP</a>、<a href="#a=Murecho&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Murecho</a>、<a href="#a=BIZ+UDGothic&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">BIZ UDGothic</a>、<a href="#a=Kosugi&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kosugi</a>、<a href="#a=DotGothic16&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">DotGothic16</a>、<a href="#a=Mochiy+Pop+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Mochiy Pop One</a>、<a href="#a=Yusei+Magic&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Yusei Magic</a>、<a href="#a=Monomaniac+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Monomaniac One</a>、<a href="#a=RocknRoll+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">RocknRoll One</a>、<a href="#a=Zen+Kurenaido&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Zen Kurenaido</a>、<a href="#a=Shippori+Antique&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Shippori Antique</a>、<a href="#a=Mochiy+Pop+P+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Mochiy Pop P One</a>、<a href="#a=Stick&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Stick</a>、<a href="#a=Shippori+Antique+B1&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Shippori Antique B1</a>、<a href="#a=WDXL+Lubrifont+JP+N&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">WDXL Lubrifont JP N</a>、<a href="#a=Tsukimi+Rounded&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Tsukimi Rounded</a>、<a href="#a=M+PLUS+U&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">M PLUS U</a></li>
+<li><b>明朝</b>（20）: <a href="#a=Noto+Serif+JP&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Noto Serif JP</a>、<a href="#a=Shippori+Mincho&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Shippori Mincho</a>、<a href="#a=Sawarabi+Mincho&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Sawarabi Mincho</a>、<a href="#a=Zen+Old+Mincho&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Zen Old Mincho</a>、<a href="#a=Shippori+Mincho+B1&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Shippori Mincho B1</a>、<a href="#a=Kaisei+Decol&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kaisei Decol</a>、<a href="#a=Kiwi+Maru&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kiwi Maru</a>、<a href="#a=Yuji+Mai&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Yuji Mai</a>、<a href="#a=BIZ+UDPMincho&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">BIZ UDPMincho</a>、<a href="#a=Hina+Mincho&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Hina Mincho</a>、<a href="#a=Yuji+Syuku&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Yuji Syuku</a>、<a href="#a=Zen+Antique&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Zen Antique</a>、<a href="#a=Kaisei+Opti&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kaisei Opti</a>、<a href="#a=Zen+Antique+Soft&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Zen Antique Soft</a>、<a href="#a=Kaisei+Tokumin&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kaisei Tokumin</a>、<a href="#a=Aoboshi+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Aoboshi One</a>、<a href="#a=BIZ+UDMincho&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">BIZ UDMincho</a>、<a href="#a=Kaisei+HarunoUmi&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kaisei HarunoUmi</a>、<a href="#a=Yuji+Boku&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Yuji Boku</a>、<a href="#a=New+Tegomin&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">New Tegomin</a></li>
+<li><b>デザイン</b>（11）: <a href="#a=Dela+Gothic+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Dela Gothic One</a>、<a href="#a=Potta+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Potta One</a>、<a href="#a=Rampart+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Rampart One</a>、<a href="#a=Cherry+Bomb+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Cherry Bomb One</a>、<a href="#a=Reggae+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Reggae One</a>、<a href="#a=Train+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Train One</a>、<a href="#a=Darumadrop+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Darumadrop One</a>、<a href="#a=Shizuru&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Shizuru</a>、<a href="#a=Rock+3D&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Rock 3D</a>、<a href="#a=Palette+Mosaic&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Palette Mosaic</a>、<a href="#a=Chokokutai&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Chokokutai</a></li>
+<li><b>手書き</b>（7）: <a href="#a=Hachi+Maru+Pop&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Hachi Maru Pop</a>、<a href="#a=Klee+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Klee One</a>、<a href="#a=Yomogi&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Yomogi</a>、<a href="#a=Kapakana&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Kapakana</a>、<a href="#a=Slackside+One&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Slackside One</a>、<a href="#a=Yuji+Hentaigana+Akari&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Yuji Hentaigana Akari</a>、<a href="#a=Yuji+Hentaigana+Akebono&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">Yuji Hentaigana Akebono</a></li>
+<li><b>等幅</b>（1）: <a href="#a=M+PLUS+1+Code&wa=400&b=Noto+Sans+JP&wb=400&t=%E6%B0%B8%E3%81%82%E3%81%AA%E3%82%A2">M PLUS 1 Code</a></li>
+      </ul>
+    </details>
+
+    <h2>よくある質問</h2>
+    <dl>
+      <dt>無料ですか？</dt><dd>無料です。登録も不要で、ブラウザだけで動きます。ソースコードは <a href="https://github.com/mytkymt/jikurabe" rel="noopener">GitHub</a> で公開しています。</dd>
+      <dt>フォントファイルをアップロードして大丈夫ですか？</dt><dd>ファイルは JavaScript でブラウザ内に読み込まれるだけで、サーバーには一切送信されません。ページを閉じれば消えます。</dd>
+      <dt>元になったツールは？</dt><dd>欧文フォント向けの <a href="https://winniethemu.github.io/tiff/" rel="noopener">Tiff</a>（@winnie_the_mu）に着想を得て、日本語フォント向けに新しく実装したものです。</dd>
+      <dt>スマートフォンでも使えますか？</dt><dd>使えます。PC のフォント一覧の読み込みだけは、デスクトップの Chrome / Edge が必要です。</dd>
+    </dl>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>オリジナルの <a href="https://winniethemu.github.io/tiff/" target="_blank" rel="noopener">Tiff</a>（by @winnie_the_mu）に着想を得た、日本語フォント向けの実装です。差分％は、2つの字形のどちらかが塗られている面積のうち、片方だけが塗られている面積の割合です。</p>
+</footer>
+
+<script src="fonts.js?v=2"></script>
+<script src="app.js?v=6"></script>
+</body>
+</html>

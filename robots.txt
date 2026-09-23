@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mytkymt.github.io/jikurabe/sitemap.xml
